@@ -20,12 +20,6 @@ class TransactionsRepository {
     this.transactions = [];
   }
 
-  /*
-  public all(): Transaction[] {
-    return this.transactions;
-  }
-  */
-
   public all(): { transactions: Transaction[]; balance: Balance } {
     return { transactions: this.transactions, balance: this.getBalance() };
   }
@@ -40,9 +34,32 @@ class TransactionsRepository {
       } else if (transaction.type === 'outcome') {
         balance.total -= transaction.value;
       }
-
       return balance;
     });
+
+    /* sugerido o uso do reduce, porém optei pelo forEach
+    const balance = this.transactions.reduce(
+      (accumulator: Balance, transaction: Transaction) => {
+        accumulator[transaction.type] += transaction.value;
+        switch (transaction.type) {
+          case 'income':
+            accumulator.total += transaction.value;
+            break;
+          case 'outcome':
+            accumulator.total -= transaction.value;
+            break;
+          default:
+            break;
+        }
+        return accumulator;
+      },
+      {
+        income: 0,
+        outcome: 0,
+        total: 0,
+      },
+    );
+    */
 
     return balance;
   }
